@@ -1,0 +1,99 @@
+<!DocType HTML>
+<html lang="zh-CN"><head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+
+    <base />
+    <script>
+        document.getElementsByTagName('base')[0].href =
+            (self.location.hostname === 'localhost')  ?
+                self.location.href.split( /\?|\#/ )[0]  :
+                'https://appraise.leanapp.cn/';
+    </script>
+
+    <title>风评</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.bootcss.com/layer/3.0.3/skin/default/layer.min.css" />
+    <link rel="stylesheet" href="index.css" />
+<!--[if lte IE 9]>
+    <script src="//cdn.bootcss.com/html5-history-api/4.2.8/history.min.js"></script>
+<![endif]-->
+    <script src="//cdn.bootcss.com/MutationObserver.js/0.3.2/mutationobserver.min.js"></script>
+    <script src="//cdn.bootcss.com/require.js/2.3.5/require.min.js"></script>
+    <script>
+        require.config({
+            baseUrl:    'script/',
+            paths:      {
+                jquery:
+                    'https://cdn.bootcss.com/jquery/3.2.1/jquery.min',
+                BootStrap:
+                    'https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min',
+                marked:
+                    'https://cdn.bootcss.com/marked/0.3.6/marked.min',
+                Layer:
+                    'https://cdn.bootcss.com/layer/3.0.3/layer.min',
+                Media_Flow:       '../page/Media_Flow'
+            },
+            shim:       {
+                BootStrap:    ['jquery']
+            }
+        });
+    </script>
+    <script src="index.js"></script>
+</head><body>
+    <div data-href="component/NavBar.html?data=index.json">
+
+        <div data-href="?data=user/OAuth">
+
+            <ul class="nav navbar-nav navbar-right">
+
+                <li style="display: ${scope.github ? 'none' : ''}">
+
+                    <a href="page/logIn.html">登录</a>
+                </li>
+                <li style="display: ${scope.github ? '' : 'none'}"
+                    class="dropdown">
+
+                    <a href="#" class="dropdown-toggle"
+                       data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false">
+
+                        <i class="glyphicon glyphicon-user"></i>
+                        <!--${view.github.name}-->
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="page/User/detail.html?data=github/users/${view.github.login}">
+                                用户主页
+                            </a>
+                        </li>
+                        <li>
+                            <a href="page/User/profile.html?data=user/profile">
+                                用户档案
+                            </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a target="_top" href="//appraise.leanapp.cn/user/signOut">
+                                退出登录
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+<!--  SPA Page Container  -->
+    <div id="PageBox"></div>
+
+    <footer><div class="container"><div class="row">
+    </div></div></footer>
+
+<!--  AJAX loading  -->
+    <div data-href="component/Loading.html"></div>
+</body></html>

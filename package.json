@@ -1,0 +1,56 @@
+{
+  "name": "appraise-network",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Appraise Network",
+  "engines": {
+    "node": "^6.5.0"
+  },
+  "main": "index.js",
+  "apidoc": {
+    "name": "Appraise Network",
+    "url": "http://localhost:3000"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --inspect --debug-brk index.js",
+    "dev": "nodemon --inspect index.js",
+    "build": "apidoc -i server/ -o docs/RESTful-API -t node_modules/apidoc-ewa/source/",
+    "help": "opn docs/index.html"
+  },
+  "author": "shiy007@qq.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/git-hacker/iAppraise.git"
+  },
+  "keywords": [
+    "Git",
+    "Developer",
+    "SNS",
+    "JavaScript"
+  ],
+  "bugs": {
+    "url": "https://github.com/git-hacker/iAppraise/issues"
+  },
+  "homepage": "https://git-hacker.github.io/iAppraise/",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-multiparty": "^2.1.0",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "express-github": "^0.5.1",
+    "leancloud-storage": "^3.4.2",
+    "leanengine": "^3.0.2",
+    "node-fetch": "^1.7.3",
+    "qiniu": "^7.1.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "apidoc": "^0.17.6",
+    "apidoc-ewa": "^1.0.1",
+    "nodemon": "^1.12.7",
+    "opn-cli": "^3.1.0"
+  }
+}

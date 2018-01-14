@@ -1,0 +1,100 @@
+abbr[title] {
+    text-decoration:    none;
+}
+img {
+    display:       inline-block;
+    max-width:     100%;
+    max-height:    100%;
+}
+select:disabled {
+    background:    rgb(238, 238, 238);
+    cursor:        not-allowed;
+}
+
+
+.jumbotron h1 {
+	margin:    2rem  auto;
+}
+.label {
+	margin-right:    0.5em;
+}
+.label a {
+    color:              white;
+	text-decoration:    none;
+}
+.media-left, .media-right {
+    width:    10%;
+}
+.Ellipsis {
+    overflow:         hidden;
+    white-space:      nowrap;
+    text-overflow:    ellipsis;
+}
+.Grid-Row {
+    display:    table;
+    width:      100%;
+}
+.Grid-Row > * {
+    display:           table-cell;
+    vertical-align:    middle;
+}
+.Flow-Box {
+    padding:      0;
+    font-size:    0  !important;
+}
+.Flow-Box > * {
+    display:           inline-block;
+    vertical-align:    middle;
+    font-size:         16px;
+    font-size:         1rem;
+    float:             none;
+}
+.Background-Image {
+    min-width:              3em;
+    min-height:             3em;
+    background-repeat:      no-repeat;
+    background-position:    center;
+    background-size:        cover;
+}
+.invalid {
+    border-color:    red;
+}
+
+
+.Card {
+    border:        1px  solid  lightgray;
+    transition:    0.25s;
+    margin:        1rem  auto;
+}
+.Card:hover {
+    box-shadow:    2px  2px  10px  lightgray;
+}
+.Card:first-child {
+    margin-top:    0;
+}
+.Card:last-child {
+    margin-bottom:    0;
+}
+.Card > * {
+	padding:    1.5rem;
+}
+
+
+@media (min-width: 768px) {
+    #PageBox {
+        padding-top:    4.25rem;
+    }
+}
+#PageBox > .container {
+    padding:    1rem;
+}
+body > footer {
+    background:    black;
+    color:         white;
+}
+footer > .container > .row > * {
+    padding:    2rem;
+}
+footer a {
+    font-size:    0.85rem;
+}
