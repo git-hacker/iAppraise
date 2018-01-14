@@ -47,13 +47,13 @@
 </head><body>
     <div data-href="component/NavBar.html?data=index.json">
 
-        <div data-href="?data=user/OAuth">
+        <div data-href="?data=user/session">
 
             <ul class="nav navbar-nav navbar-right">
 
                 <li style="display: ${scope.username ? 'none' : ''}">
 
-                    <a href="page/logIn.html">登录</a>
+                    <a href="page/User/logIn.html">登录</a>
                 </li>
                 <li style="display: ${scope.username ? '' : 'none'}"
                     class="dropdown">
@@ -68,7 +68,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="page/User/profile.html?data=user/profile">
+                            <a href="page/User/profile.html?data=user/${view.id}">
                                 用户档案
                             </a>
                         </li>

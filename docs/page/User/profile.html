@@ -1,0 +1,40 @@
+<style disabled>
+    .container > fieldset {
+        width:     50%;
+        margin:    auto;
+    }
+</style>
+<script src="profile.js"></script>
+
+<form class="container" method="${scope.id ? 'put' : 'post'}"
+      action="?data=user/${view.id}"
+      onsubmit="${view.lock}" ondata="${view.unlock}">
+
+    <fieldset onchange="${view.check}">
+
+        <legend>联系方式</legend>
+
+        <div class="form-group">
+            <input type="email" class="form-control"
+                   name="email" value="${view.email}" placeholder="电子邮件" />
+        </div>
+        <div class="form-group">
+            <input type="tel" class="form-control"
+                   name="mobilePhoneNumber" value="${view.mobilePhoneNumber}"
+                   minlength="11" placeholder="手机号" />
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control"
+                   name="QQ" pattern="\d{5,}" value="${view.QQ}"
+                   placeholder="QQ 号" />
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control"
+                   name="WeChat" pattern="\w+" value="${view.WeChat}"
+                   placeholder="微信 ID" />
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary btn-block" />
+        </div>
+    </fieldset>
+</form>

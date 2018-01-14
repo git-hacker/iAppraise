@@ -4,6 +4,11 @@
         {
             "title":    "统计",
             "URL":      "page/summary.html"
+        },
+        {
+            "title":    "点评",
+            "name":     "人品点评",
+            "URL":      "page/User/profile.html"
         }
     ]
 }

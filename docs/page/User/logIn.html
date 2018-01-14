@@ -5,7 +5,12 @@
 
             data.reload = function () {
 
-                self.location.href = '';
+                $( self ).one('popstate',  function () {
+
+                    self.location.reload();
+                });
+
+                self.history.back();
             };
         });
     });
