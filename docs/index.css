@@ -89,12 +89,9 @@ select:disabled {
     padding:    1rem;
 }
 body > footer {
-    background:    black;
-    color:         white;
-}
-footer > .container > .row > * {
-    padding:    2rem;
-}
-footer a {
-    font-size:    0.85rem;
+    margin-top:    3.5em;
+    padding:       2em;
+    text-align:    center;
+    background:    rgb(34, 34, 34);
+    color:         lightgray;
 }

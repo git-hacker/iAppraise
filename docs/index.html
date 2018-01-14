@@ -51,11 +51,11 @@
 
             <ul class="nav navbar-nav navbar-right">
 
-                <li style="display: ${scope.github ? 'none' : ''}">
+                <li style="display: ${scope.username ? 'none' : ''}">
 
                     <a href="page/logIn.html">登录</a>
                 </li>
-                <li style="display: ${scope.github ? '' : 'none'}"
+                <li style="display: ${scope.username ? '' : 'none'}"
                     class="dropdown">
 
                     <a href="#" class="dropdown-toggle"
@@ -63,15 +63,10 @@
                        aria-haspopup="true" aria-expanded="false">
 
                         <i class="glyphicon glyphicon-user"></i>
-                        <!--${view.github.name}-->
+                        <!--${view.username}-->
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li>
-                            <a href="page/User/detail.html?data=github/users/${view.github.login}">
-                                用户主页
-                            </a>
-                        </li>
                         <li>
                             <a href="page/User/profile.html?data=user/profile">
                                 用户档案
@@ -79,7 +74,7 @@
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a target="_top" href="//appraise.leanapp.cn/user/signOut">
+                            <a target="_top" href="user/signOut">
                                 退出登录
                             </a>
                         </li>
@@ -91,8 +86,19 @@
 <!--  SPA Page Container  -->
     <div id="PageBox"></div>
 
-    <footer><div class="container"><div class="row">
-    </div></div></footer>
+    <footer class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                ©2017 <a href="https://tech-query.me/">TechQuery</a>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                Powered by
+                <a href="https://boot-web.tk/">
+                    BootEWA
+                </a>
+            </div>
+        </div>
+    </footer>
 
 <!--  AJAX loading  -->
     <div data-href="component/Loading.html"></div>

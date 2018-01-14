@@ -16,7 +16,7 @@
     "test": "node --inspect --debug-brk index.js",
     "dev": "nodemon --inspect index.js",
     "build": "apidoc -i server/ -o docs/RESTful-API -t node_modules/apidoc-ewa/source/",
-    "help": "opn docs/index.html"
+    "help": "opn docs/RESTful-API/index.html"
   },
   "author": "shiy007@qq.com",
   "repository": {

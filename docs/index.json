@@ -1,0 +1,9 @@
+{
+    "title":      "风评",
+    "channel":    [
+        {
+            "title":    "统计",
+            "URL":      "page/summary.html"
+        }
+    ]
+}

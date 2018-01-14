@@ -84,6 +84,10 @@ app.use(LeanCloud.Cloud.CookieSession({
  * @apiSuccess {Number}   total                  结果总数
  */
 
+app.use( require('./User') );
+
+app.use( require('./Tag') );
+
 
 
 /* ---------- 异常处理 ---------- */

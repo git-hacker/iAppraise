@@ -48,12 +48,6 @@ require([
 
         iWebApp.on({
             type:      'data',
-            method:    'GET'
-        },  function (event, data) {
-
-            return  FixData( data );
-        }).on({
-            type:      'data',
             method:    /POST|PUT|DELETE/i
         },  function (_, data) {
 
