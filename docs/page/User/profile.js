@@ -8,17 +8,18 @@ require(['jquery', 'EasyWebApp'],  function ($, EWA) {
 
             var input = event.target;
 
-            $.getJSON(
-                app.apiRoot + 'user?keyWord=' + input.value,
-                function (data) {
+            if (! this.id)
+                $.getJSON(
+                    app.apiRoot + 'user?keyWord=' + input.value,
+                    function (data) {
 
-                    $.each(data.list,  function () {
+                        $.each(data.list,  function () {
 
-                        if (this[ input.name ]  ===  input.value)
-                            return  (! VM.render( this ));
-                    });
-                }
-            );
+                            if (this[ input.name ]  ===  input.value)
+                                return  (! VM.render( this ));
+                        });
+                    }
+                );
         };
 
         data.lock = function (event) {

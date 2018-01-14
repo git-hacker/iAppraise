@@ -6,7 +6,7 @@ const LeanCloud = require('leanengine');
 
 
 
-exports.fixData = function (data) {
+function fixData(data) {
 
     if (data.toJSON instanceof Function)  data = data.toJSON();
 
@@ -20,10 +20,10 @@ exports.fixData = function (data) {
     delete data.authData;
 
     return data;
-};
+}
 
 
-exports.fetchPointer = function (data) {
+function fetchPointer(data) {
 
     var fetch = [ ], _data_ = data.attributes;
 
@@ -31,7 +31,7 @@ exports.fetchPointer = function (data) {
         if (_data_[ key ]  instanceof  LeanCloud.Object)
             fetch.push([key,  _data_[ key ]]);
 
-    data = exports.fixData( data );
+    data = fixData( data );
 
     return  Promise.all(fetch.map(function (item) {
 
@@ -39,7 +39,7 @@ exports.fetchPointer = function (data) {
             item[1].className, item[1].id
         ).fetch().then(function (_data_) {
 
-            data[ item[0] ] = exports.fixData(_data_);
+            data[ item[0] ] = fixData(_data_);
 
             _data_ = _data_.attributes;
 
@@ -48,7 +48,7 @@ exports.fetchPointer = function (data) {
                     delete  data[ item[0] ][ key ];
         });
     })).then(function () {  return data;  });
-};
+}
 
 
 /**
@@ -71,7 +71,7 @@ exports.fetchPointer = function (data) {
  */
 exports.reply = function (response, promise) {
 
-    return  promise.then( exports.fetchPointer ).then(function (data) {
+    return  promise.then( fetchPointer ).then(function (data) {
 
         response.json( data ).end();
 
@@ -85,7 +85,28 @@ exports.reply = function (response, promise) {
 };
 
 
-exports.condition = function (where, parameter) {
+/**
+ * 会话验证中间件
+ *
+ * @author TechQuery
+ *
+ * @param {object}   request
+ * @param {object}   response
+ * @param {function} next
+ */
+exports.checkSession = function (request, response, next) {
+
+    if (request.currentUser instanceof LeanCloud.User)  return next();
+
+    var error = new ReferenceError('Unauthorized');
+
+    error.status = 401;
+
+    exports.reply(response,  Promise.reject( error ));
+};
+
+
+function conditionOf(where, parameter) {
 
     var pointer = [ ], like = '';
 
@@ -113,28 +134,10 @@ exports.condition = function (where, parameter) {
         `${pointer} and (${like})`  :  (pointer || like);
 
     return  where  ?  `where (${where})`  :  '';
-};
+}
 
 
-/**
- * 批量查询
- *
- * @author TechQuery <shiy007@qq.com>
- *
- * @param  {object}   parameter    - 查询条件（如 Express 中的 `request.query`）
- * @param  {string}   table        - 数据表名
- * @param  {string[]} [where=[]]   - 模糊查询的字段
- * @param  {string[]} [include=[]] - 查询包含的其它表数据
- *
- * @return {Promise}   查询结果
- */
-exports.query = function (parameter, table, where = [ ], include = [ ]) {
-
-    Object.assign(parameter, {
-        rows:       parameter.rows || 10,
-        page:       parameter.page || 1,
-        keyWord:    (parameter.keyWord || '').trim()
-    });
+function queryList(table, where, include, rows, page) {
 
     var link = include || '';
 
@@ -145,30 +148,78 @@ exports.query = function (parameter, table, where = [ ], include = [ ]) {
 
         }).join(', ')  +  ', ';
 
-    where = exports.condition(where, parameter);
+    return LeanCloud.Query.doCloudQuery(
+        `select ${link}* from ${table} ${where} limit ${(page - 1) * rows},${rows}`,
+        this
+    ).then(function (data) {
+
+        return  data.results.map(function (item) {
+
+            item = fixData( item );
+
+            for (let key of include)  item[ key ] = fixData( item[ key ] );
+
+            return item;
+        });
+    });
+}
+
+
+function queryCount(table, where) {
+
+    return LeanCloud.Query.doCloudQuery(
+        `select count(*) from ${table} ${where}`,  this
+    );
+}
+
+
+/**
+ * 批量查询
+ *
+ * @author TechQuery <shiy007@qq.com>
+ *
+ * @param  {object}       parameter    - 查询条件（如 Express 中的 `request.query`）
+ * @param  {string|Array} table        - 数据表名（单表查询 或 列表计数）
+ * @param  {string[]}     [where=[]]   - 模糊查询的字段
+ * @param  {string[]}     [include=[]] - 查询包含的其它表数据
+ *
+ * @return {Promise}  查询结果
+ */
+exports.query = function (parameter, table, where = [ ], include = [ ]) {
+
+    Object.assign(parameter, {
+        rows:       parameter.rows || 10,
+        page:       parameter.page || 1,
+        keyWord:    (parameter.keyWord || '').trim()
+    });
+
+    where = conditionOf(where, parameter);
+
+    var auth = (this instanceof LeanCloud.User)  ?  {user: this}  :  { },
+        count = { };
+
+    if (table instanceof Array)
+        return  Promise.all(table.map(function (name) {
+
+            return  queryCount.call(auth, name, where).then(function (data) {
+
+                count[ data.className ] = data.count;
+            });
+        })).then(function () {
+
+            return count;
+        });
 
     return Promise.all([
-        LeanCloud.Query.doCloudQuery(
-            `select ${link}* from ${table} ${where} limit ${
-                (parameter.page - 1) * parameter.rows},${parameter.rows}`,
-            {user: this}
-        ),
-        LeanCloud.Query.doCloudQuery(
-            `select count(*) from ${table} ${where}`,  {user: this}
+        queryCount.call(auth, table, where),
+        queryList.call(
+            auth,  table,  where,  include,  parameter.rows,  parameter.page
         )
     ]).then(function (data) {
 
         return {
-            list:     data[0].results.map(function (item) {
-
-                item = exports.fixData( item );
-
-                for (let key of include)
-                    item[ key ] = exports.fixData( item[ key ] );
-
-                return item;
-            }),
-            total:    data[1].count
+            total:    data[0].count,
+            list:     data[1]
         };
     });
 };

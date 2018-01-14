@@ -5,7 +5,7 @@ const Express = require('express'),
       bodyParser = require('body-parser'),
       LeanCloud = require('leanengine');
 
-const app = Express();
+const app = Express(), Utility = require('./utility');
 
 
 /* ---------- Express 中间件 ---------- */
@@ -84,10 +84,25 @@ app.use(LeanCloud.Cloud.CookieSession({
  * @apiSuccess {Number}   total                  结果总数
  */
 
-app.use( require('./User') );
+app.use('/user', require('./User'));
 
 app.use( require('./Tag') );
 
+app.get('/summary',  function (request, response) {
+
+    Utility.reply(
+        response,
+        Utility.query(request.query,  ['_User', 'Tag']).then(function (data) {
+
+            var _data_ = { };
+
+            for (var name in data)
+                _data_[ name.replace(/^_/, '').toLowerCase() ] = data[ name ];
+
+            return _data_;
+        })
+    );
+});
 
 
 /* ---------- 异常处理 ---------- */
