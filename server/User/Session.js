@@ -5,8 +5,23 @@ const router = require('express').Router(),
       Utility = require('../utility');
 
 
-
-router.get('/',  function (request, response) {
+/**
+ * @api {get} /session 查询当前用户会话
+ *
+ * @apiName    getUserSession
+ * @apiVersion 1.0.0
+ * @apiGroup   UserSession
+ *
+ * @apiHeader {String} Cookie
+ *
+ * @apiUse Model_Meta
+ *
+ * @apiSuccess {String} username          用户名
+ * @apiSuccess {String} mobilePhoneNumber 手机号
+ * @apiSuccess {String} QQ                QQ 号
+ * @apiSuccess {String} WeChat            微信号
+ */
+router.get('/session',  function (request, response) {
 
     Utility.reply(
         response,
@@ -15,7 +30,16 @@ router.get('/',  function (request, response) {
 });
 
 
-router.post('/SMSCode',  function (request, response) {
+/**
+ * @api {post} /user/session/SMSCode 发送短信验证码
+ *
+ * @apiName    createSMSCode
+ * @apiVersion 1.0.0
+ * @apiGroup   UserSession
+ *
+ * @apiParam {String} mobilePhoneNumber 手机号
+ */
+router.post('/session/SMSCode',  function (request, response) {
 
     Utility.reply(
         response,
@@ -24,7 +48,17 @@ router.post('/SMSCode',  function (request, response) {
 });
 
 
-router.post('/',  function (request, response) {
+/**
+ * @api {post} /user/session 用户登录
+ *
+ * @apiName    createUserSession
+ * @apiVersion 1.0.0
+ * @apiGroup   UserSession
+ *
+ * @apiParam {String} mobilePhoneNumber 手机号
+ * @apiParam {String} SMSCode           短信验证码
+ */
+router.post('/session',  function (request, response) {
 
     Utility.reply(
         response,
@@ -40,7 +74,16 @@ router.post('/',  function (request, response) {
 });
 
 
-router.delete('/',  function (request, response) {
+/**
+ * @api {delete} /user/session 用户登出
+ *
+ * @apiName    deleteUserSession
+ * @apiVersion 1.0.0
+ * @apiGroup   UserSession
+ *
+ * @apiHeader {String} Cookie
+ */
+router.delete('/session',  function (request, response) {
 
     if (! request.currentUser)  return;
 

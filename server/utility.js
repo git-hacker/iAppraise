@@ -95,8 +95,14 @@ exports.reply = function (response, promise) {
  * @param {function} next
  */
 exports.checkSession = function (request, response, next) {
-
-    if (request.currentUser instanceof LeanCloud.User)  return next();
+    if (
+        (
+            (request.hostname === 'localhost')  &&    //  APIDoc Sample
+            (request.headers['x-requested-with'] === 'XMLHttpRequest')
+        ) ||
+        (request.currentUser instanceof LeanCloud.User)
+    )
+        return next();
 
     var error = new ReferenceError('Unauthorized');
 
@@ -222,4 +228,30 @@ exports.query = function (parameter, table, where = [ ], include = [ ]) {
             list:     data[1]
         };
     });
+};
+
+
+/**
+ * 对象数组分组计数
+ *
+ * @author TechQuery
+ *
+ * @param {object[]} list
+ *
+ * @return {object[]}
+ */
+exports.groupBy = function (list) {
+
+    var map = { }, rows = [ ];
+
+    for (let item of list)
+        if (item.id in map)
+            map[ item.id ].count++;
+        else {
+            (map[ item.id ] = Object.assign({ }, item)).count = 1;
+
+            rows.push( map[item.id] );
+        }
+
+    return rows;
 };

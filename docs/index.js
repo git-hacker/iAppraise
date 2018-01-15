@@ -58,7 +58,7 @@ require([
             src:       'user/session'
         },  function () {
 
-            self.location.href = '';
+            self.location.href = this.pageRoot;
         });
 
     //  主导航栏

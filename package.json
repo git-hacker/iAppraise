@@ -9,7 +9,8 @@
   "main": "index.js",
   "apidoc": {
     "name": "Appraise Network",
-    "url": "http://localhost:3000"
+    "url": "https://appraise.leanapp.cn",
+    "sampleUrl": "http://localhost:3000"
   },
   "scripts": {
     "start": "node index.js",
