@@ -583,6 +583,7 @@
           {
             "group": "Parameter",
             "type": "String",
+            "size": "5..",
             "optional": true,
             "field": "QQ",
             "description": "<p>QQ 号</p>"
@@ -856,6 +857,7 @@
           {
             "group": "Parameter",
             "type": "String",
+            "size": "5..",
             "optional": true,
             "field": "QQ",
             "description": "<p>QQ 号</p>"

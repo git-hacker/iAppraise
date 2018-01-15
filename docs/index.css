@@ -80,10 +80,8 @@ select:disabled {
 }
 
 
-@media (min-width: 768px) {
-    #PageBox {
-        padding-top:    4.25rem;
-    }
+#PageBox {
+    padding-top:    4.25rem;
 }
 #PageBox > .container {
     padding:    1rem;

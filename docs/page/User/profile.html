@@ -38,3 +38,8 @@
         </div>
     </fieldset>
 </form>
+
+<div style="display: ${scope.id ? '' : 'none'}"
+     data-href="../Tag/index.html?data=user/${view.id}/tag" data-delete="true"
+     onupdate="${view.loadTag}">
+</div>

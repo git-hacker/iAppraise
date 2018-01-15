@@ -1,0 +1,50 @@
+<style disabled>
+    ul.container {
+        padding:    0;
+    }
+    .label {
+        display:      inline-block;
+        font-size:    1.5em;
+        padding:      0.5em;
+        margin:       0.25em;
+    }
+    .label a {
+        color:    white;
+    }
+</style>
+
+<script>
+    require(['jquery', 'EasyWebApp'],  function ($, EWA) {
+
+        EWA.component(function (data) {
+
+            data.colorType = [
+                'default', 'primary', 'success', 'info', 'warning', 'danger'
+            ];
+
+            var API_URL = this.$_View[0].dataset.href.split('?data=')[1];
+
+            data.deleteURL = function () {
+
+                return  this.delete  &&  API_URL;
+            };
+
+            data.delete = data.delete  &&  function (event) {
+
+                $( event.target.parentNode ).view().remove( this.$_View );
+            };
+        });
+    });
+</script>
+
+<ul class="container" data-name="list">
+    <li class="label label-${scope.colorType[view.__index__ % scope.colorType.length]}">
+        <!--${view.title}-->
+        <a style="display: ${scope.deleteURL() ? '' : 'none'}"
+           data-method="DELETE"
+           href="?data=${scope.deleteURL()}/${view.id}"
+           ondata="${scope.delete}">
+            &times;
+        </a>
+    </li>
+</ul>

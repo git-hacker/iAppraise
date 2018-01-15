@@ -19,7 +19,7 @@ require([
         if (XHR.status === 401)
             Layer.alert('会话失效，请重新登录！',  function () {
 
-                self.location.href = './';
+                self.location.href = $.filePath();
             });
         else
             Layer.alert(

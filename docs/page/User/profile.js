@@ -36,5 +36,10 @@ require(['jquery', 'EasyWebApp'],  function ($, EWA) {
 
             this.id = data.id;
         };
+
+        data.loadTag = function (event) {
+
+            app.load( event.target );
+        };
     });
 });

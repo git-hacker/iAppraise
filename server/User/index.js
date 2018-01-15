@@ -7,7 +7,7 @@ const Router = require('express').Router,
 const User = Router(), Person = Router();
 
 
-Person.use( require('./Session') );
+User.use('/user', require('./Session'));
 
 
 /**
@@ -17,11 +17,9 @@ Person.use( require('./Session') );
  * @apiVersion 1.0.0
  * @apiGroup   User
  *
- * @apiParam {String} mobilePhoneNumber 手机号
- * @apiParam {String} [QQ]              QQ 号
- * @apiParam {String} [WeChat]          微信号
- *
- * @apiSampleRequest
+ * @apiParam {String}      mobilePhoneNumber 手机号
+ * @apiParam {String{5..}} [QQ]              QQ 号
+ * @apiParam {String}      [WeChat]          微信号
  */
 Person.post('/',  function (request, response) {
 
@@ -46,12 +44,10 @@ Person.post('/',  function (request, response) {
  * @apiVersion 1.0.0
  * @apiGroup   User
  *
- * @apiParam {String} id                  用户索引
- * @apiParam {String} [mobilePhoneNumber] 手机号
- * @apiParam {String} [QQ]                QQ 号
- * @apiParam {String} [WeChat]            微信号
- *
- * @apiSampleRequest
+ * @apiParam {String}      id                  用户索引
+ * @apiParam {String}      [mobilePhoneNumber] 手机号
+ * @apiParam {String{5..}} [QQ]                QQ 号
+ * @apiParam {String}      [WeChat]            微信号
  */
 Person.put('/:id',  function (request, response) {
 
@@ -82,8 +78,6 @@ Person.put('/:id',  function (request, response) {
  * @apiSuccess {String} mobilePhoneNumber 手机号
  * @apiSuccess {String} QQ                QQ 号
  * @apiSuccess {String} WeChat            微信号
- *
- * @apiSampleRequest
  */
 Person.get('/:id',  function (request, response) {
 
@@ -107,8 +101,6 @@ Person.get('/:id',  function (request, response) {
  * @apiSuccess {String} list.mobilePhoneNumber 手机号
  * @apiSuccess {String} list.QQ                QQ 号
  * @apiSuccess {String} list.WeChat            微信号
- *
- * @apiSampleRequest
  */
 Person.get('/',  function (request, response) {
 

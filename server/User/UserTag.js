@@ -16,8 +16,6 @@ const LCObject = LeanCloud.Object, UserTag = LeanCloud.Object.extend('UserTag');
  *
  * @apiParam {String} uid 用户索引
  * @apiParam {String} id  标签索引
- *
- * @apiSampleRequest
  */
 router.post('/:uid/tag',  function (request, response) {
 
@@ -74,8 +72,6 @@ router.delete('/:uid/tag/:id',  function (request, response) {
  * @apiSuccess {String} list.title 标签名
  * @apiSuccess {Number} list.type  褒贬义
  * @apiSuccess {Number} list.count 引用计数
- *
- * @apiSampleRequest
  */
 router.get('/:id/tag',  function (request, response) {
 

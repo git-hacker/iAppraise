@@ -88,7 +88,9 @@ app.get('/summary',  function (request, response) {
 
     Utility.reply(
         response,
-        Utility.query(request.query,  ['_User', 'Tag']).then(function (data) {
+        Utility.query(
+            request.query,  ['_User', 'Tag', 'UserTag']
+        ).then(function (data) {
 
             var _data_ = { };
 

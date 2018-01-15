@@ -18,8 +18,6 @@ const Tag = LeanCloud.Object.extend('Tag');
  * @apiParam {Number=-1,0,1} type  褒贬义（-1：贬义；0：中性；1：褒义）
  *
  * @apiSuccess {String} id 标签索引
- *
- * @apiSampleRequest
  */
 router.post('/tag',  Utility.checkSession,  function (request, response) {
 
@@ -41,8 +39,6 @@ router.post('/tag',  Utility.checkSession,  function (request, response) {
  * @apiSuccess {String} list.title 标签名
  * @apiSuccess {Number} list.type  褒贬义
  * @apiSuccess {Number} list.count 引用计数
- *
- * @apiSampleRequest
  */
 router.get('/tag',  function (request, response) {
 

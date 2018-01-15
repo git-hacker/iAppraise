@@ -1,4 +1,28 @@
-<nav class="navbar navbar-fixed-top ${view.dark ? 'navbar-inverse' : ''}">
+<script>
+    require(['jquery', 'EasyWebApp', 'BootStrap'],  function ($, EWA) {
+
+        EWA.component(function () {
+
+            this.one('ready',  function () {
+
+                Promise.all(this.childOf(':hidden').map(
+                    EWA.prototype.load.bind(new EWA())
+                )).then(function () {
+
+                    var $_Nav = $('#Main_Nav');
+
+                    if ( $.browser.mobile )
+                        $_Nav.on('click',  '.nav > li',  function () {
+
+                            $_Nav.collapse('hide');
+                        });
+                });
+            });
+        });
+    });
+</script>
+
+<nav class="navbar navbar-fixed-top navbar-${scope.dark ? 'inverse' : 'default'}">
 
     <div class="container">
 

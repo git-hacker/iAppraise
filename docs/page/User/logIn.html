@@ -3,14 +3,21 @@
 
         EWA.component(function (data) {
 
+            var $_SMSCode = $('[name="SMSCode"]');
+
+            data.sendable = function () {
+
+                return  $_SMSCode.validate() ? '' : 'disabled';
+            };
+
+            data.submitable = function (input) {
+
+                return  $( input.form ).validate();
+            };
+
             data.reload = function () {
 
-                $( self ).one('popstate',  function () {
-
-                    self.location.reload();
-                });
-
-                self.history.back();
+                self.location.href = (new EWA()).pageRoot;
             };
         });
     });
@@ -27,15 +34,16 @@
         <input type="text" class="form-control"
                name="SMSCode" required pattern="\w{6}"
                placeholder="验证码" />
-        <a class="btn btn-success"
-           data-method="post" href="?data=user/session/SMSCode"
+    </div>
+    <div class="form-group">
+        <a class="btn btn-success ${view.sendable()}"
+           data-method="post"
+           href="?data=user/session/SMSCode"
            data-mobile-phone-number="${view.mobilePhoneNumber}">
             短信发送
         </a>
-    </div>
-    <div class="form-group">
         <button type="submit" class="btn btn-primary"
-                disabled="${! this.form.checkValidity()}">
+                disabled="${! view.submitable(this)}">
             登录
         </button>
     </div>
