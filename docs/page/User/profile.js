@@ -4,30 +4,52 @@ require(['jquery', 'EasyWebApp'],  function ($, EWA) {
 
         var app = new EWA(), VM = this;
 
+        var TagView = VM.childOf()[0], lock_form;
+
+        function loadTag() {
+
+            if (! TagView.__parse__)
+                app.load( TagView );
+            else
+                TagView.refresh();
+        }
+
         data.check = function (event) {
 
             var input = event.target;
 
-            if (! this.id)
-                $.getJSON(
-                    app.apiRoot + 'user?keyWord=' + input.value,
-                    function (data) {
+            if ( this.id )  return;
 
-                        $.each(data.list,  function () {
+            lock_form = true;
 
-                            if (this[ input.name ]  ===  input.value)
-                                return  (! VM.render( this ));
-                        });
-                    }
-                );
+            $.getJSON(
+                app.apiRoot + 'user?keyWord=' + input.value,
+                function (data) {
+
+                    $.each(data.list,  function () {
+
+                        if (this[ input.name ]  ===  input.value) {
+
+                            VM.render( this );
+
+                            return  (!! loadTag());
+                        }
+                    });
+
+                    lock_form = false;
+                }
+            );
         };
 
         data.lock = function (event) {
 
-            $(':field', event.target).prop('disabled',  function () {
+            if ( lock_form )
+                event.stopPropagation(), event.preventDefault();
+            else
+                $(':field', event.target).prop('disabled',  function () {
 
-                return  (! this.value);
-            });
+                    return  (! this.value);
+                });
         };
 
         data.unlock = function (event, data) {
@@ -35,11 +57,10 @@ require(['jquery', 'EasyWebApp'],  function ($, EWA) {
             $(':disabled', event.target).prop('disabled', false);
 
             this.id = data.id;
+
+            loadTag();
         };
 
-        data.loadTag = function (event) {
-
-            app.load( event.target );
-        };
+        data.reset = VM.clear.bind( VM );
     });
 });

@@ -84,6 +84,8 @@ app.use( require('./User') );
 
 app.use( require('./Tag') );
 
+app.use( require('./Relation/UserTag') );
+
 app.get('/summary',  function (request, response) {
 
     Utility.reply(

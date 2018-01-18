@@ -16,30 +16,35 @@
 
         <div class="form-group">
             <input type="email" class="form-control"
-                   name="email" value="${view.email}" placeholder="电子邮件" />
+                   name="email" value="${view.email}"
+                   readonly="${view.emailVerified}"
+                   placeholder="电子邮件" />
         </div>
         <div class="form-group">
             <input type="tel" class="form-control"
                    name="mobilePhoneNumber" value="${view.mobilePhoneNumber}"
-                   minlength="11" placeholder="手机号" />
+                   minlength="11" readonly="${view.mobilePhoneVerified}"
+                   placeholder="手机号" />
         </div>
         <div class="form-group">
             <input type="text" class="form-control"
                    name="QQ" pattern="\d{5,}" value="${view.QQ}"
+                   readonly="${view.id && view.QQ}"
                    placeholder="QQ 号" />
         </div>
         <div class="form-group">
             <input type="text" class="form-control"
                    name="WeChat" pattern="\w+" value="${view.WeChat}"
+                   readonly="${view.id && view.WeChat}"
                    placeholder="微信 ID" />
         </div>
         <div class="form-group">
             <input type="submit" class="btn btn-primary btn-block" />
+            <input type="button" class="btn btn-danger btn-block" value="清空"
+                   onclick="${view.reset}" />
         </div>
     </fieldset>
 </form>
 
 <div style="display: ${scope.id ? '' : 'none'}"
-     data-href="../Tag/index.html?data=user/${view.id}/tag" data-delete="true"
-     onupdate="${view.loadTag}">
-</div>
+     data-href="../Tag/index.html" data-uid="${view.id}"></div>

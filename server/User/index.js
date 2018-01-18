@@ -116,7 +116,7 @@ Person.get('/',  function (request, response) {
 });
 
 
-User.use('/user', Utility.checkSession, require('./UserTag'), Person);
+User.use('/user', Utility.checkSession, Person);
 
 
 

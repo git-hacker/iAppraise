@@ -12,10 +12,12 @@
                     var $_Nav = $('#Main_Nav');
 
                     if ( $.browser.mobile )
-                        $_Nav.on('click',  '.nav > li',  function () {
+                        $_Nav.on(
+                            'click',  'li > a:not(.dropdown > a)',  function () {
 
-                            $_Nav.collapse('hide');
-                        });
+                                $_Nav.collapse('hide');
+                            }
+                        );
                 });
             });
         });

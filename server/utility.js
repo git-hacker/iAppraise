@@ -8,6 +8,8 @@ const LeanCloud = require('leanengine');
 
 function fixData(data) {
 
+    if (! (data != null))  return;
+
     if (data.toJSON instanceof Function)  data = data.toJSON();
 
     if ( data.objectId ) {

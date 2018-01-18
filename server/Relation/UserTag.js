@@ -1,10 +1,13 @@
 'use strict';
 
-const router = require('express').Router(),
+const Router = require('express').Router,
       LeanCloud = require('leanengine'),
       Utility = require('../utility');
 
-const LCObject = LeanCloud.Object, UserTag = LeanCloud.Object.extend('UserTag');
+const User = Router(),
+      Appraise = Router(),
+      LCObject = LeanCloud.Object,
+      UserTag = LeanCloud.Object.extend('UserTag');
 
 
 /**
@@ -17,7 +20,7 @@ const LCObject = LeanCloud.Object, UserTag = LeanCloud.Object.extend('UserTag');
  * @apiParam {String} uid 用户索引
  * @apiParam {String} id  标签索引
  */
-router.post('/:uid/tag',  function (request, response) {
+User.post('/:uid/tag',  function (request, response) {
 
     Utility.reply(
         response,
@@ -42,7 +45,7 @@ router.post('/:uid/tag',  function (request, response) {
  *
  * @apiPermission Creator
  */
-router.delete('/:uid/tag/:id',  function (request, response) {
+User.delete('/:uid/tag/:id',  function (request, response) {
 
     Utility.reply(
         response,
@@ -73,7 +76,7 @@ router.delete('/:uid/tag/:id',  function (request, response) {
  * @apiSuccess {Number} list.type  褒贬义
  * @apiSuccess {Number} list.count 引用计数
  */
-router.get('/:id/tag',  function (request, response) {
+User.get('/:id/tag',  function (request, response) {
 
     Utility.reply(
         response,
@@ -90,10 +93,69 @@ router.get('/:id/tag',  function (request, response) {
                 return relation.tag;
             }));
 
+            data.total = data.list.length;
+
             return data;
         })
     );
 });
 
 
-module.exports = router;
+/**
+ * @api {get} /user/:id/appraise 查询贴标记录
+ *
+ * @apiName    listUserAppraise
+ * @apiVersion 1.0.0
+ * @apiGroup   UserTag
+ *
+ * @apiParam {String} id 用户索引
+ *
+ * @apiUse List_Query
+ *
+ * @apiSuccess {Object} list.user 用户
+ * @apiSuccess {Object} list.tag  标签
+ */
+User.get('/:id/appraise',  function (request, response) {
+
+    Utility.reply(
+        response,
+        Utility.query.call(
+            request.currentUser,
+            {user:  LCObject.createWithoutData('_User', request.params.id)},
+            'UserTag',
+            null,
+            ['user', 'tag', 'creator']
+        )
+    );
+});
+
+
+/**
+ * @api {get} /appraise 全局查询贴标记录
+ *
+ * @apiName    listAppraise
+ * @apiVersion 1.0.0
+ * @apiGroup   UserTag
+ *
+ * @apiUse List_Query
+ *
+ * @apiSuccess {Object} list.user 用户
+ * @apiSuccess {Object} list.tag  标签
+ */
+Appraise.get('/appraise',  function (request, response) {
+
+    Utility.reply(
+        response,
+        Utility.query(
+            request.query,  'UserTag',  null,  ['user', 'tag', 'creator']
+        )
+    );
+});
+
+
+
+Appraise.use('/user', Utility.checkSession, User);
+
+
+
+module.exports = Appraise;

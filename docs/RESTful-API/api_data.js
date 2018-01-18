@@ -388,11 +388,244 @@ define({ "api": [
         ]
       }
     },
-    "filename": "server/User/UserTag.js",
+    "filename": "server/Relation/UserTag.js",
     "groupTitle": "UserTag",
     "sampleRequest": [
       {
         "url": "http://localhost:3000/user/:uid/tag"
+      }
+    ]
+  },
+  {
+    "type": "get",
+    "url": "/appraise",
+    "title": "全局查询贴标记录",
+    "name": "listAppraise",
+    "version": "1.0.0",
+    "group": "UserTag",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.user",
+            "description": "<p>用户</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.tag",
+            "description": "<p>标签</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "list",
+            "description": "<p>结果列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "list.id",
+            "description": "<p>唯一索引</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.creator",
+            "description": "<p>创建者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "list.createdAt",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.editor",
+            "description": "<p>编辑者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "list.updatedAt",
+            "description": "<p>更新时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>结果总数</p>"
+          }
+        ]
+      }
+    },
+    "filename": "server/Relation/UserTag.js",
+    "groupTitle": "UserTag",
+    "sampleRequest": [
+      {
+        "url": "http://localhost:3000/appraise"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "rows",
+            "defaultValue": "10",
+            "description": "<p>结果行数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "defaultValue": "1",
+            "description": "<p>结果页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyWord",
+            "description": "<p>关键词</p>"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "get",
+    "url": "/user/:id/appraise",
+    "title": "查询贴标记录",
+    "name": "listUserAppraise",
+    "version": "1.0.0",
+    "group": "UserTag",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>用户索引</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "rows",
+            "defaultValue": "10",
+            "description": "<p>结果行数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "defaultValue": "1",
+            "description": "<p>结果页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyWord",
+            "description": "<p>关键词</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.user",
+            "description": "<p>用户</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.tag",
+            "description": "<p>标签</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "list",
+            "description": "<p>结果列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "list.id",
+            "description": "<p>唯一索引</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.creator",
+            "description": "<p>创建者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "list.createdAt",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "list.editor",
+            "description": "<p>编辑者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "list.updatedAt",
+            "description": "<p>更新时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>结果总数</p>"
+          }
+        ]
+      }
+    },
+    "filename": "server/Relation/UserTag.js",
+    "groupTitle": "UserTag",
+    "sampleRequest": [
+      {
+        "url": "http://localhost:3000/user/:id/appraise"
       }
     ]
   },
@@ -515,7 +748,7 @@ define({ "api": [
         ]
       }
     },
-    "filename": "server/User/UserTag.js",
+    "filename": "server/Relation/UserTag.js",
     "groupTitle": "UserTag",
     "sampleRequest": [
       {
@@ -555,7 +788,7 @@ define({ "api": [
         "name": "Creator"
       }
     ],
-    "filename": "server/User/UserTag.js",
+    "filename": "server/Relation/UserTag.js",
     "groupTitle": "UserTag",
     "sampleRequest": [
       {

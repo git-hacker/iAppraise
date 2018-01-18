@@ -1,6 +1,7 @@
 <style disabled>
-    ul.container {
-        padding:    0;
+    .container > ul {
+        padding:       0;
+        list-style:    none;
     }
     .label {
         display:      inline-block;
@@ -18,33 +19,71 @@
 
         EWA.component(function (data) {
 
-            data.colorType = [
-                'default', 'primary', 'success', 'info', 'warning', 'danger'
-            ];
+            data.rootPath = function () {
 
-            var API_URL = this.$_View[0].dataset.href.split('?data=')[1];
-
-            data.deleteURL = function () {
-
-                return  this.delete  &&  API_URL;
+                return  data.uid ? ('user/' + data.uid) : ''
             };
 
-            data.delete = data.delete  &&  function (event) {
+            data.fixData = function () {
+
+                return arguments[1].list;
+            };
+
+            var label_type = [
+                    'default', 'primary', 'success', 'info', 'warning', 'danger'
+                ],
+                load_view = EWA.prototype.load.bind(new EWA());
+
+            data.colorType = function () {
+
+                return  label_type[this.__index__ % label_type.length];
+            };
+
+            data.delete = function (event) {
 
                 $( event.target.parentNode ).view().remove( this.$_View );
             };
+
+            this.refresh = function () {
+
+                return  Promise.all(this.childOf().map( load_view ));
+            };
+
+            this.on('update',  function (_, data) {
+
+                if ( data.uid )  this.refresh();
+            });
         });
     });
 </script>
 
-<ul class="container" data-name="list">
-    <li class="label label-${scope.colorType[view.__index__ % scope.colorType.length]}">
-        <!--${view.title}-->
-        <a style="display: ${scope.deleteURL() ? '' : 'none'}"
-           data-method="DELETE"
-           href="?data=${scope.deleteURL()}/${view.id}"
-           ondata="${scope.delete}">
-            &times;
-        </a>
-    </li>
-</ul>
+<div class="container">
+
+    <h3>标签云</h3>
+
+    <ul data-href="?data=${view.rootPath()}/tag" ondata="${view.fixData}">
+
+        <li class="label label-${scope.colorType()}">
+            <!--${view.title}-->
+            <a style="display: ${scope.uid ? '' : 'none'}"
+               data-method="DELETE"
+               href="?data=user/${scope.uid}/${view.id}"
+               ondata="${scope.uid && scope.delete}">
+                &times;
+            </a>
+        </li>
+    </ul>
+
+    <hr />
+    <h3>时间轴</h3>
+
+    <ul data-href="?data=${view.rootPath()}/appraise" ondata="${view.fixData}">
+        <li>
+            ${view.creator.username} ${view.createdTime} 评价 ${view.user.username}
+
+            <span class="label label-${scope.colorType()}">
+                ${view.tag.title}
+            </span>
+        </li>
+    </ul>
+</div>
