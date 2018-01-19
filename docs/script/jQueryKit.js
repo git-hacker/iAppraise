@@ -472,6 +472,69 @@ var object_ext_base = (function ($) {
         return iResult;
     };
 
+    var depth = 0;
+    /**
+     * 对象树 递归遍历
+     *
+     * @author TechQuery <shiy007@qq.com>
+     *
+     * @memberof $
+     *
+     * @param {object}        node     - Object tree
+     * @param {string}        fork_key - Key of children list
+     * @param {MapTreeFilter} filter   - Map filter
+     *
+     * @return {Array}  Result list of Map filter
+     *
+     * @example  // DOM 树遍历
+     *
+     *     $.mapTree(
+     *         $('<a>A<b>B<!--C--></b></a>')[0],
+     *         'childNodes',
+     *         function (node, index, depth) {
+     *             return  depth + (
+     *                 (node.nodeType === 3)  ?  node.nodeValue  :  ''
+     *             );
+     *         }
+     *     ).join('')
+     *
+     *     //  '1A12B2'
+     */
+    $.mapTree = function mapTree(node, fork_key, filter) {
+
+        var children = node[fork_key], list = [ ];    depth++ ;
+
+        for (var i = 0, value;  children[i];  i++) {
+            /**
+             * 对象遍历过滤器
+             *
+             * @callback MapTreeFilter
+             *
+             * @param {object} child
+             * @param {number} index
+             * @param {number} depth
+             *
+             * @return {?object}  `Null` or `Undefined` to **Skip the Sub-Tree**,
+             *                    and Any other Type to Add into the Result Array.
+             */
+            value = filter.call(node, children[i], i, depth);
+
+            if (value != null) {
+
+                list.push( value );
+
+                if ( children[i][fork_key][0] )
+                    list.push.apply(
+                        list,  mapTree(children[i], fork_key, filter)
+                    );
+            }
+        }
+
+        depth-- ;
+
+        return list;
+    };
+
     /**
      * ES 6 迭代器协议
      *
@@ -815,28 +878,12 @@ var utility_ext_string = (function ($) {
 
 /* ---------- DOM Text Content ---------- */
 
-    function mapTree(node, filter) {
-
-        var children = node.childNodes, list = [ ];
-
-        for (var i = 0, value;  children[i];  i++) {
-
-            if ((value = filter.call(node, children[i]))  !=  null)
-                list.push( value );
-
-            if ( children[i].childNodes[0] )
-                list.push.apply(list,  mapTree(children[i], filter));
-        }
-
-        return list;
-    }
-
     Object.defineProperty(Node.prototype, 'textContent', {
         get:    function () {
 
-            return  mapTree(this,  function (node) {
+            return  $.mapTree(this,  'childNodes',  function (node) {
 
-                if (node.nodeType !== 1)  return  node.nodeValue || '';
+                return  (node.nodeType !== 1)  ?  node.nodeValue  :  '';
 
             }).join('');
         },
@@ -2401,30 +2448,28 @@ var event_ext_base = (function ($, Observer) {
 
         this.empty();
 
-        var $_Box = $('<div />');
-
-        $_Box[0].innerHTML = HTML;
+        var $_Box = $('<div />').prop('innerHTML', HTML);
 
         return  (! selector)  ?
             this.each(function () {
 
                 $_Box = $( $_Box[0].cloneNode( true ) );
 
-                var walker = $_Box.treeWalker(1,  function (iDOM) {
+                $.mapTree($_Box[0],  'children',  function (child) {
 
-                        if (iDOM.tagName.toLowerCase() != 'script')  return;
+                    if (child.tagName.toLowerCase() !== 'script')
+                        return child;
 
-                        var iAttr = { };
+                    var attribute = { };
 
-                        $.each(iDOM.attributes,  function () {
+                    $.each(child.attributes,  function () {
 
-                            iAttr[ this.nodeName ] = this.nodeValue;
-                        });
-
-                        return  $('<script />',  iAttr)[0];
+                        attribute[ this.nodeName ] = this.nodeValue;
                     });
 
-                while (! walker.next().done)  ;
+                    $('<script />',  attribute).prop('text', child.text)
+                        .replaceAll( child );
+                });
 
                 $_Box.children().insertTo( this );
             })  :

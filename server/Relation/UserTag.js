@@ -55,7 +55,7 @@ User.delete('/:uid/tag/:id',  function (request, response) {
             'tag',  LCObject.createWithoutData('Tag', request.params.id)
         ).first().then(function (relation) {
 
-            return relation.destroy();
+            return  relation.destroy({user: request.currentUser});
         })
     );
 });

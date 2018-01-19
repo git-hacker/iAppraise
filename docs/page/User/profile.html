@@ -1,6 +1,6 @@
 <style disabled>
     .container > fieldset {
-        width:     50%;
+        width:     55%;
         margin:    auto;
     }
 </style>
@@ -48,3 +48,5 @@
 
 <div style="display: ${scope.id ? '' : 'none'}"
      data-href="../Tag/index.html" data-uid="${view.id}"></div>
+
+<div data-href="../Tag/edit.html" onadd="${view.addTag}"></div>

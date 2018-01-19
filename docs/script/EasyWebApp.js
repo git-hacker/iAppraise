@@ -381,34 +381,22 @@ var view_RenderNode = (function ($) {
 
     function RenderNode(node) {
 
-        this.DOMType = $.Type( node );
-
-        var name = node.name;
-
-        if (this.DOMType === 'Attr') {
-
-            var propKey = $.propFix[ name ]  ||  (
-                    (name in node.ownerElement)  &&  name
-                );
-
-            if ( propKey )
-                this.name = propKey,  this.DOMType = 'Prop';
-            else
-                this.name = name;
-        }
-
         $.extend(this, {
             ownerNode:       node,
             raw:             node.nodeValue || node.value,
             ownerElement:    node.parentNode || node.ownerElement,
             type:            0,
             value:           null
-        }).scan();
+        }).update();
+
+        this.scan();
     }
 
     RenderNode.expression = /\$\{([\s\S]+?)\}/g;
 
     RenderNode.reference = /(\w+)(\.|\[(?:'|")|\()(\w+)?/g;
+
+    RenderNode.rawName = /^(data\-|on)\w+/;
 
     RenderNode.Reference_Mask = {
         view:     1,
@@ -434,6 +422,27 @@ var view_RenderNode = (function ($) {
 
     $.extend(RenderNode.prototype = [ ],  {
         constructor:    RenderNode,
+        update:         function () {
+
+            var node = this.ownerNode;
+
+            if (! node)  return;
+
+            var name = node.name;
+
+            this.DOMType = $.Type( node );
+
+            if (this.DOMType !== 'Attr')  return;
+
+            var propKey = $.propFix[ name ]  ||  (
+                    (name in node.ownerElement)  &&  name
+                );
+
+            if ( propKey )
+                this.name = propKey,  this.DOMType = 'Prop';
+            else
+                this.name = name;
+        },
         add:            function (key) {
 
             if (key  &&  (this.indexOf( key )  <  0))
@@ -449,10 +458,10 @@ var view_RenderNode = (function ($) {
                 case 'Comment':    return  (node.nodeValue = value);
                 case 'Attr':       ;
                 case 'Prop':
-                    if (
-                        !(node.value = value)  &&
-                        (node.name.slice(0, 5) !== 'data-')
-                    ) {
+                    if (! (
+                        (node.value = value)  ||
+                        node.name.match( RenderNode.rawName )
+                    )) {
                         this.ownerElement.removeAttribute( node.name );
 
                         this.ownerNode = null;
@@ -495,6 +504,8 @@ var view_RenderNode = (function ($) {
             if ( this[0] )  this.clear();
         },
         eval:           function (context, scope) {
+
+            if (this.value === null)  this.update();
 
             var refer,  _This_ = this.ownerElement;
 
@@ -1106,27 +1117,34 @@ var view_View = (function ($, Observer, DataScope, RenderNode) {
         /**
          * 视图对象 属性监视
          *
-         * @author   TechQuery
+         * @author TechQuery
          *
          * @memberof View.prototype
          *
-         * @param    {string} key       - Property Key
-         * @param    {object} [get_set] - Getter & Setter
+         * @param {string} key       - Property Key
+         * @param {object} [get_set] - Getter & Setter
          *
-         * @returns  {View}   Current View
+         * @returns {View}  Current View
+         *
+         * @throws {ReferenceError}  When Prototype key or Array index
+         *                           is overwritten
          */
         watch:         function (key, get_set) {
             if (
-                !(key  in  Object.getPrototypeOf( this ))  &&
-                !((typeof this.length === 'number')  &&  $.isNumeric( key ))
+                (key  in  Object.getPrototypeOf( this ))  ||
+                ((typeof this.length === 'number')  &&  $.isNumeric( key ))
             )
-                this.setPublic(key, get_set, {
-                    get:    function () {
+                throw ReferenceError(
+                    'Inner Property "' + key + '" can\'t be overwritten.'
+                );
 
-                        return  this.__data__[key];
-                    },
-                    set:    this.render.bind(this, key)
-                });
+            this.setPublic(key, get_set, {
+                get:    function () {
+
+                    return  this.__data__[key];
+                },
+                set:    this.render.bind(this, key)
+            });
 
             return this;
         },
@@ -1152,11 +1170,12 @@ var view_View = (function ($, Observer, DataScope, RenderNode) {
          */
         clear:         function () {
 
-            var data = this.valueOf();
+            var data = this.valueOf(), _data_ = { };
 
-            for (var key in data)  data[ key ] = '';
+            for (var key in data)
+                if (! (data[key] instanceof Function))  _data_[key] = '';
 
-            return  this.render( data );
+            return  this.render(_data_);
         },
         /**
          * 获取子组件
@@ -1444,18 +1463,24 @@ var view_HTMLView = (function ($, View, DOMkit, RenderNode) {
         }
     }, {
         indexOf:       Array.prototype.indexOf,
-        signIn:        function (iNode) {
+        signIn:        function (node) {
 
-            for (var i = 0;  this[i];  i++)  if (this[i] == iNode)  return;
+            for (var i = 0;  this[i];  i++)  if (this[i] == node)  return;
 
-            this[this.length++] = iNode;
+            this[this.length++] = node;
 
-            var iName = (iNode instanceof RenderNode)  ?
-                    iNode  :  [iNode.__name__];
+            var name = (node instanceof RenderNode)  ?
+                    node  :  [node.__name__];
 
-            for (var j = 0;  iName[j];  j++)
-                this.watch( iName[j] ).__map__[iName[j]] =
-                    (this.__map__[iName[j]] || 0)  +  Math.pow(2, i);
+            for (var j = 0;  name[j];  j++)  try {
+
+                this.watch( name[j] ).__map__[name[j]] =
+                    (this.__map__[name[j]] || 0)  +  Math.pow(2, i);
+
+            } catch (error) {
+
+                console.warn( error );
+            }
         },
         parsePlain:    function (node) {
 
@@ -1582,13 +1607,13 @@ var view_HTMLView = (function ($, View, DOMkit, RenderNode) {
         /**
          * HTML 模板解析
          *
-         * @author   TechQuery
+         * @author TechQuery
          *
          * @memberof HTMLView.prototype
          *
-         * @param    {string}   [template] - A HTML String of the Component's template
-         *                                   with HTMLSlotElement
-         * @returns  {HTMLView} Current HTMLView
+         * @param {string} [template] - A HTML String of the Component's template
+         *                              with HTMLSlotElement
+         * @return {HTMLView}  Current HTMLView
          */
         parse:         function (template) {
 
@@ -2388,7 +2413,7 @@ var WebApp = (function ($, Observer, View, HTMLView, ListView, TreeView, DOMkit,
  *
  * @module    {function} WebApp
  *
- * @version   4.0 (2018-01-05) stable
+ * @version   4.0 (2018-01-18) stable
  *
  * @requires  jquery
  * @see       {@link http://jquery.com/ jQuery}

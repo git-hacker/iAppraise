@@ -1,0 +1,85 @@
+<style disabled>
+    input[type="radio"] {
+        display:    none;
+    }
+    label {
+        font-size:    2em;
+    }
+    input:checked + label {
+        color:    red;
+    }
+</style>
+
+<script>
+    require(['jquery', 'EasyWebApp'],  function ($, EWA) {
+
+        EWA.component(function (data) {
+
+            var VM = this;
+
+            data.fixData = function (_, data) {
+
+                var value = this.$_View.find('[type="search"]')[0].value;
+
+                return  $.each(data.list,  function () {
+
+                    if (this.title === value)  return  (! VM.render( this ));
+                });
+            };
+
+            data.check = function (_, data) {
+
+                this.render( data );
+            };
+
+            data.add = function () {
+
+                this.emit('add', this.valueOf());
+            };
+        });
+    });
+</script>
+
+<form class="container" method="post" action="?data=tag" ondata="${view.check}">
+    <fieldset>
+        <legend>点评标签</legend>
+
+        <div class="form-group"
+             data-href="../../component/Search.html"
+             data-api="tag?keyWord="
+             data-key="title" data-required="true" data-place-holder="标题"
+             onloaded="${view.fixData}" oncheck="${view.check}">
+
+            <span><!--${view.title}--></span>
+        </div>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-success btn-block"
+                    onclick="return false">
+                搜索
+            </button>
+        </div>
+
+        <div class="form-group">
+            <div class="row text-center">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <input type="radio" name="type" value="1" id="Good_Type" />
+                    <label class="glyphicon glyphicon-thumbs-up" for="Good_Type"></label>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <input type="radio" name="type" value="-1" id="Bad_Type" />
+                    <label class="glyphicon glyphicon-thumbs-down" for="Bad_Type"></label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                新增
+            </button>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-warning btn-block"
+                    onclick="${view.add}">
+                贴标
+            </button>
+        </div>
+    </fieldset>
+</form>

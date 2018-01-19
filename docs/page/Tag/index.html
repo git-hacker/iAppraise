@@ -9,6 +9,10 @@
         padding:      0.5em;
         margin:       0.25em;
     }
+    .label > .badge {
+        background:    white;
+        color:         gray;
+    }
     .label a {
         color:    white;
     }
@@ -39,7 +43,7 @@
                 return  label_type[this.__index__ % label_type.length];
             };
 
-            data.delete = function (event) {
+            data.delete = data.delete  &&  function (event) {
 
                 $( event.target.parentNode ).view().remove( this.$_View );
             };
@@ -65,10 +69,12 @@
 
         <li class="label label-${scope.colorType()}">
             <!--${view.title}-->
-            <a style="display: ${scope.uid ? '' : 'none'}"
+            <em class="badge"><!--${view.count}--></em>
+
+            <a style="display: ${scope.delete ? '' : 'none'}"
                data-method="DELETE"
-               href="?data=user/${scope.uid}/${view.id}"
-               ondata="${scope.uid && scope.delete}">
+               href="?data=user/${scope.uid}/tag/${view.id}"
+               ondata="${view.delete}">
                 &times;
             </a>
         </li>
@@ -79,10 +85,12 @@
 
     <ul data-href="?data=${view.rootPath()}/appraise" ondata="${view.fixData}">
         <li>
-            ${view.creator.username} ${view.createdTime} 评价 ${view.user.username}
+            <!--${view.creator.username} ${view.createdTime}-->
+            评价
+            <!--${view.user.username}-->
 
             <span class="label label-${scope.colorType()}">
-                ${view.tag.title}
+                <!--${view.tag.title}-->
             </span>
         </li>
     </ul>

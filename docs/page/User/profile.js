@@ -62,5 +62,14 @@ require(['jquery', 'EasyWebApp'],  function ($, EWA) {
         };
 
         data.reset = VM.clear.bind( VM );
+
+        data.addTag = function (_, data) {
+
+            $.post(
+                app.apiRoot + 'user/' + this.id + '/tag',
+                {id: data.id},
+                loadTag
+            );
+        };
     });
 });

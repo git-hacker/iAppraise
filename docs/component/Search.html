@@ -1,0 +1,81 @@
+<style disabled>
+    .Box {
+        position:    relative;
+    }
+    .Box > ul {
+        position:      absolute;
+        left:          0;
+        top:           100%;
+        right:         0;
+        z-index:       1;
+        margin:        0;
+        padding:       0;
+        list-style:    none;
+        border:        1px  solid  rgb(204, 204, 204);
+        background:    white;
+        display:       none;
+    }
+    .Box > ul > li {
+        padding:    6px  12px;
+        cursor:     pointer;
+    }
+    .Box > ul > li:hover {
+        background:    rgb(230, 230, 230);
+    }
+</style>
+
+<script>
+    require(['jquery', 'EasyWebApp'],  function ($, EWA) {
+
+        EWA.component(function (data) {
+
+            var iWebApp = new EWA(), VM = this;
+
+            data.getURL = function () {
+
+                var data = this.valueOf();
+
+                return  data[ data.key ]  ?
+                    encodeURI(data.api + data[data.key])  :  '';
+            };
+
+            var $_Search = this.$_View.find('.Box > [type="search"]')
+                    .on('input', false),
+                $_Tips = this.$_View.find('.Box > ul');
+
+            data.search = EWA.prototype.load.bind(iWebApp, $_Tips);
+
+            data.show = function (_, data) {
+
+                $_Tips.show();
+
+                var list = this.emit('loaded', data);
+
+                return  (list instanceof Array)  ?  list  :  data;
+            };
+
+            data.select = function (event) {
+
+                $_Tips.hide();
+
+                $_Search[0].value =
+                    event.target.textContent.trim().split("\n")[0].trim();
+
+                VM.emit('check', this.valueOf());
+            };
+        });
+    });
+</script>
+
+<div class="Box">
+    <input type="search" class="form-control"
+           name="${view.key}" value="${scope[ view.key ]}"
+           required="${view.required}"
+           autocomplete="off" placeholder="${view.placeHolder}" />
+
+    <ul data-href="?data=${view.getURL()}"
+        onupdate="${view.search}" ondata="${view.show}">
+
+        <li onclick="${scope.select}"><slot></slot></li>
+    </ul>
+</div>
