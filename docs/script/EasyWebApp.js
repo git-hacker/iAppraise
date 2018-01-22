@@ -2389,10 +2389,31 @@ var WebApp = (function ($, Observer, View, HTMLView, ListView, TreeView, DOMkit,
 
             return this;
         },
+        prefetch:         function (view) {
+
+            var list = Object.keys($.makeSet.apply($, $.map(
+                    view.$_View.find( InnerLink.HTML_Link ),
+                    function (link) {
+
+                        link = (link.getAttribute('href') || '').split( /\?|\#/ )[0];
+
+                        return  (link  &&  (! $.isXDomain(link)))  ?  link  :  null;
+                    }
+                )));
+
+            if ( list[0] )  this.emit('prefetch', list);
+
+            return this;
+        },
         boot:             function () {
 
             var root = (new HTMLView('html')).parse().render( $.paramJSON() ),
                 _This_ = this;
+
+            this.prefetch( root ).on('ready',  function () {
+
+                this.prefetch( arguments[1] );
+            });
 
             return  this[root.$_View[0].dataset.href ? 'load' : 'loadChild'](
                 root

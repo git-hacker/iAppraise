@@ -14,6 +14,9 @@
 
     <title>风评</title>
 
+	<link rel="manifest" href="manifest.json" />
+    <script src="script/manUp.min.js" async defer></script>
+
     <link rel="stylesheet"
           href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet"
@@ -36,10 +39,12 @@
                     'https://cdn.bootcss.com/marked/0.3.6/marked.min',
                 Layer:
                     'https://cdn.bootcss.com/layer/3.0.3/layer.min',
-                Media_Flow:       '../page/Media_Flow'
+                OneSignal:
+                    'https://cdn.onesignal.com/sdks/OneSignalSDK'
             },
             shim:       {
-                BootStrap:    ['jquery']
+                BootStrap:    ['jquery'],
+                OneSignal:    {exports: 'OneSignal'}
             }
         });
     </script>

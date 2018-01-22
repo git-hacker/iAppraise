@@ -2,6 +2,15 @@ require([
     'jquery', 'Layer', 'marked', 'EasyWebApp', 'BootStrap'
 ],  function ($, Layer, marked) {
 
+    var SW = navigator.serviceWorker, version = '20180121';
+
+    if (SW  &&  (! SW.controller))
+        SW.register(
+            'service.js?version=' + version,  {scope: './'}
+        ).then(
+            console.dir.bind( console )
+        );
+
     $.ajaxSetup({xhrFields:  {withCredentials: true}});
 
 
@@ -82,6 +91,23 @@ require([
                 );
 
             $_Link.parent().addClass('active').siblings().removeClass('active');
+        });
+
+    //  PWA
+
+        if (! SW)  return;
+
+        iWebApp.on('prefetch',  function (_, page) {
+
+            self.caches.open( version ).then(function (cache) {
+
+                return  cache.addAll( page );
+            });
+        });
+
+        require(['OneSignal'],  function (OneSignal) {
+
+            OneSignal.init({appId: 'b6e5a696-82ec-44d5-82ed-4d1ab5ce6183'});
         });
     });
 });
