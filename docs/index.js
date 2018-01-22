@@ -43,7 +43,7 @@ require([
             );
     }).ready(function () {
 
-        var iWebApp = $('#PageBox').iWebApp();
+        var iWebApp = $('#PageBox').iWebApp('https://appraise.leanapp.cn/');
 
     //  JSON 请求预处理
 
