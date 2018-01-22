@@ -43,7 +43,7 @@ require([
             );
     }).ready(function () {
 
-        var iWebApp = $('#PageBox').iWebApp( document.baseURI );
+        var iWebApp = $('#PageBox').iWebApp();
 
     //  JSON 请求预处理
 
