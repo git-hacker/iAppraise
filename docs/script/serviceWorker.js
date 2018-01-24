@@ -1,40 +1,75 @@
-self.importScripts(
-    'https://cdn.bootcss.com/url-search-params/0.10.0/url-search-params.js'
-);
-
-
-var version = (new URLSearchParams( self.location.search )).get('version');
-
 function Fetch(request) {
 
-    return  self.fetch( request ).then(function (response) {
+    var response;
 
-        return  caches.open( version ).then(function (cache) {
+    return  self.fetch( request ).then(function () {
 
-            return  cache.put(request, response.clone());
+        response = arguments[0];
 
-        }).then(function () {  return response;  });
+        if ((request.method === 'GET')  &&  response.ok)
+            return  caches.open( version ).then(function (cache) {
 
-    },  caches.match.bind(caches, request));
+                return  cache.put(request, response.clone());
+            });
+    }).then(function () {  return response;  });
 }
 
 
-self.oninstall = function (event) {
+self.addEventListener('install',  function (event) {
 
-    event.waitUntil( caches.open( version ) );
-};
+    event.waitUntil( self.skipWaiting() );
+});
 
 
-self.onfetch = function (event) {
+self.addEventListener('activate',  function (event) {
 
-    var URI = new URL( event.request.url );
+    event.waitUntil(
+        caches.keys().then(function (list) {
+
+            return  Promise.all(list.map(function (key) {
+
+                return  (key !== version)  &&  caches.delete( key );
+            }));
+        }).then( clients.claim.bind( self.clients ) )
+    );
+});
+
+
+self.addEventListener('fetch',  function (event) {
+
+    var request = event.request;
+
+    var URI = new URL( request.url );
 
     event.respondWith(
         (URI.pathname.split('/').pop().indexOf('.') > -1)  ?
-            caches.match( event.request ).then(function (response) {
+            caches.match( request ).then(function (response) {
 
-                return  response || Fetch( event.request );
+                return  response || Fetch( request );
             })  :
-            Fetch( event.request )
+            Fetch( request ).catch( caches.match.bind(self.caches, request) )
     );
-};
+});
+
+
+self.addEventListener('message',  function (event) {
+
+    var data = event.data;
+
+    switch ( data.type ) {
+        case 'cache':    caches.open( version ).then(function (cache) {
+
+            return  Promise.all(data.data.map(function (URI) {
+
+                return  cache.match( URI );
+
+            })).then(function (list) {
+
+                cache.addAll(data.data.filter(function (_, index) {
+
+                    return  (! list[index]);
+                }));
+            });
+        });
+    }
+});

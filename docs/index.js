@@ -2,14 +2,22 @@ require([
     'jquery', 'Layer', 'marked', 'EasyWebApp', 'BootStrap'
 ],  function ($, Layer, marked) {
 
-    var SW = navigator.serviceWorker, version = '20180121';
+    var SW = navigator.serviceWorker, worker;
 
-    if (SW  &&  (! SW.controller))
-        SW.register(
-            'service.js?version=' + version,  {scope: './'}
-        ).then(
-            console.dir.bind( console )
-        );
+    if ( SW ) {
+
+        if (! (worker = SW.controller))
+            SW.register('service.js',  {scope: './'});
+
+        SW.addEventListener('controllerchange',  function () {
+
+            if (! worker)  return (worker = this.controller);
+
+            self.alert('检查到应用更新，按【确认】重新加载……');
+
+            location.reload( true );
+        });
+    }
 
     $.ajaxSetup({xhrFields:  {withCredentials: true}});
 
@@ -99,10 +107,11 @@ require([
 
         iWebApp.on('prefetch',  function (_, page) {
 
-            self.caches.open( version ).then(function (cache) {
-
-                return  cache.addAll( page );
-            });
+            if ( SW.controller )
+                SW.controller.postMessage({
+                    type:    'cache',
+                    data:    page
+                });
         });
 
         require(['OneSignal'],  function (OneSignal) {
